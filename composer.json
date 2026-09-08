@@ -2,7 +2,7 @@
     "name": "assistly/laravel-channel",
     "description": "Route a Laravel application's own conversations through Assistly.",
     "type": "library",
-    "license": "proprietary",
+    "license": "MIT",
     "require": {
         "illuminate/bus": "^11.0|^12.0",
         "illuminate/http": "^11.0|^12.0",

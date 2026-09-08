@@ -131,6 +131,21 @@ final readonly class AssistlyClient
                 'Idempotency-Key' => (string) Str::uuid(),
             ])
             ->timeout($this->timeoutSeconds)
+            /*
+             * Redirects are not followed.
+             *
+             * The base URL comes from a tenant, and a tenant is someone who
+             * signed up. A host can vet the address it was given; it cannot vet
+             * the address that one forwards to, so following a 302 turns a
+             * checked hostname into an unchecked one — with the request already
+             * signed and the internal network on the other side.
+             *
+             * Nothing legitimate is lost: this is an API call to an address the
+             * merchant configured, not a browser following a link. A real move
+             * is a configuration change, and it should be visible as a failed
+             * request rather than silently absorbed.
+             */
+            ->withoutRedirecting()
             ->withBody($body, 'application/json')
             ->post($this->url($path));
 

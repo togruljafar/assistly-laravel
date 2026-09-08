@@ -112,6 +112,21 @@ $mode->answers()
 Both are queued. A slow or unreachable Assistly must never slow down your own
 message pipeline — a failed job here is a missing reply, not a missing message.
 
+## The base URL
+
+`AssistlyCredentials::$baseUrl` is whatever the host handed over, and in every
+host that matters it came from a tenant — someone who signed up. The package
+therefore refuses to follow redirects: a checked hostname that forwards to an
+unchecked one is the same request against the host's internal network, signed
+and already authenticated. A 302 surfaces as `AssistlyRequestFailed` instead.
+
+What the package cannot do is vet the address itself; it does not know which
+hosts a given installation considers legitimate. **A host must validate the URL
+before storing it** — require `https`, reject credentials in the authority,
+reject addresses that resolve into private, loopback or link-local ranges, or
+pin the hostname outright. Validating only on save is not enough on its own:
+a name that resolved publicly then can resolve privately later.
+
 ## Callbacks
 
 The service provider registers `POST {assistly.webhook.path}/{tenant}` for
